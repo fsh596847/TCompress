@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingTop="40dp"
+    tools:context="com.jkt.compress.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:id="@+id/main_origin_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorGray"
+            android:minHeight="200dp"
+            android:scaleType="fitXY"
+            />
+        <TextView
+            android:id="@+id/main_origin_tv"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#373535"
+            android:textSize="15sp"
+            android:text="size -"
+            android:layout_marginTop="240dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_marginBottom="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:onClick="btnSelect"
+            android:text="选择照片"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:id="@+id/main_compressed_iv"
+            android:layout_width="match_parent"
+            android:background="@color/colorGray"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:minHeight="200dp"
+            android:src="@mipmap/ic_launcher"
+            />
+        <TextView
+            android:id="@+id/main_compressed_tv"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#373535"
+            android:textSize="15sp"
+            android:text="size -"
+            android:layout_marginTop="240dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_marginBottom="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:onClick="btnCompress"
+            android:text="选择照片"/>
+    </RelativeLayout>
+</LinearLayout>
