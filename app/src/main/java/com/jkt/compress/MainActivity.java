@@ -1,6 +1,7 @@
 package com.jkt.compress;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,12 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jkt.tcompress.FileUtil;
+
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     private ImageView mOriginIV;
     private ImageView mCompressedIV;
     private TextView mOriginTV;
     private TextView mCompressedTV;
+    private File mFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnCompress(View view) {
+        if (mFile==null) {
+            showToast("请先选择照片");
+            return;
+        }
     }
 
 
@@ -48,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
                 showToast("Failed to open picture!");
                 return;
             }
+            mFile = FileUtil.createFile(this, data.getData());
+            mOriginIV.setImageBitmap(BitmapFactory.decodeFile(mFile.getAbsolutePath()));
+            mOriginTV.setText(String.format("Size : %s", FileUtil.getFileSize(mFile.length())));
         }
     }
 

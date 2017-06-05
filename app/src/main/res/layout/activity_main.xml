@@ -19,12 +19,11 @@
         <ImageView
             android:id="@+id/main_origin_iv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:background="@color/colorGray"
-            android:minHeight="200dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             />
         <TextView
             android:id="@+id/main_origin_tv"
@@ -42,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:onClick="btnSelect"
-            android:text="选择照片"/>
+            android:text="选择图片"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -56,10 +55,9 @@
             android:id="@+id/main_compressed_iv"
             android:layout_width="match_parent"
             android:background="@color/colorGray"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:layout_alignParentTop="true"
-            android:minHeight="200dp"
-            android:src="@mipmap/ic_launcher"
+            android:scaleType="centerCrop"
             />
         <TextView
             android:id="@+id/main_compressed_tv"
@@ -77,6 +75,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:onClick="btnCompress"
-            android:text="选择照片"/>
+            android:text="压缩图片"/>
     </RelativeLayout>
 </LinearLayout>
