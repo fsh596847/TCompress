@@ -1,14 +1,17 @@
 package com.jkt.compress;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jkt.tcompress.Compress;
 import com.jkt.tcompress.FileUtil;
 
 import java.io.File;
@@ -20,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mOriginTV;
     private TextView mCompressedTV;
     private File mFile;
+    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
             showToast("请先选择照片");
             return;
         }
+        Compress compress = new Compress();
+        Bitmap compressedBitmap = compress.getCompressedBitmap(mBitmap);
+        File compressedFile = compress.bitmap2File(compressedBitmap);
+        mCompressedIV.setImageBitmap(compressedBitmap);
+        mCompressedTV.setText(String.format("Size : %s", FileUtil.getFileSize(compressedFile.length())));
     }
 
 
@@ -59,8 +68,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mFile = FileUtil.createFile(this, data.getData());
-            mOriginIV.setImageBitmap(BitmapFactory.decodeFile(mFile.getAbsolutePath()));
+            mBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
+            mOriginIV.setImageBitmap(mBitmap);
             mOriginTV.setText(String.format("Size : %s", FileUtil.getFileSize(mFile.length())));
+            Log.i("bitmapinfo",mBitmap+"   "+mBitmap.getWidth()+"     "+mBitmap.getHeight());
         }
     }
 
