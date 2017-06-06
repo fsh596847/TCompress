@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,25 +17,49 @@ public class Compress {
     //默认属性，通过构造者模式或者set方法设置
     private int mQuality = 80;
     private float mMaxHeight = 1280;
-    private float mMaxWeight = 960;
+    private float mMaxWidth = 960;
     private Bitmap.CompressFormat mFormat = Bitmap.CompressFormat.JPEG;
     private Bitmap.Config mConfig = Bitmap.Config.ARGB_8888;
 
     public File compressedToFile(File srcFile) {
-        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath());
+        BitmapFactory.Options options = getOptions(srcFile);
+        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
         File file = compressedToFile(bitmap);
+        bitmap.recycle();
         return file;
     }
-
     public File compressedToFile(Bitmap bitmap) {
         Bitmap compressedBitmap = compressedToBitmap(bitmap);
         File file = bitmap2File(compressedBitmap);
+        compressedBitmap.recycle();
         return file;
     }
 
+    @NonNull
+    private BitmapFactory.Options getOptions(File srcFile) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
+        int outWidth = options.outWidth;
+        int outHeight = options.outHeight;
+        options.inSampleSize = setSampleSize(outWidth, outHeight);
+        options.inJustDecodeBounds = false;
+        return options;
+    }
+
+    private int setSampleSize(int outWidth, int outHeight) {
+        int sampleSize = 1;
+        while (outWidth > mMaxWidth * (sampleSize + 1) && outHeight > mMaxHeight * (sampleSize + 1)) {
+            sampleSize++;
+        }
+        return sampleSize;
+    }
+
     public Bitmap compressedToBitmap(File srcFile) {
-        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath());
+        BitmapFactory.Options options = getOptions(srcFile);
+        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath(),options);
         Bitmap compressedBitmap = compressedToBitmap(bitmap);
+        bitmap.recycle();
         return compressedBitmap;
     }
 
@@ -44,11 +68,9 @@ public class Compress {
         float height = bitmap.getHeight();
         float width = bitmap.getWidth();
         float ratio = setRatio(width, height);
-        Log.i("ratioinfo", ratio + "  " + (int) (width * ratio) + "  " + (int) (height * ratio));
         ret = Bitmap.createBitmap((int) (width * ratio), (int) (height * ratio), mConfig);
         Canvas canvas = new Canvas(ret);
         canvas.drawBitmap(bitmap, null, new RectF(0, 0, ret.getWidth(), ret.getHeight()), null);
-        bitmap.recycle();
         return ret;
     }
 
@@ -74,7 +96,6 @@ public class Compress {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             FileOutputStream outputStream = new FileOutputStream(ret);
             bitmap.compress(mFormat, mQuality, baos);
-            bitmap.recycle();
             outputStream.write(baos.toByteArray());
             outputStream.flush();
             outputStream.close();
@@ -86,12 +107,12 @@ public class Compress {
 
     private float setRatio(float width, float height) {
         float ratio = 1;
-        if (mMaxWeight < width && mMaxHeight < height) {
-            if (mMaxWeight /  width < mMaxHeight / height)
-                ratio = mMaxWeight /  width;
-            else ratio = mMaxHeight /  height;
-        } else if (mMaxWeight < width) ratio = mMaxWeight /  width;
-        else if (mMaxHeight < height) ratio = mMaxHeight /  height;
+        if (mMaxWidth < width && mMaxHeight < height) {
+            if (mMaxWidth / width < mMaxHeight / height)
+                ratio = mMaxWidth / width;
+            else ratio = mMaxHeight / height;
+        } else if (mMaxWidth < width) ratio = mMaxWidth / width;
+        else if (mMaxHeight < height) ratio = mMaxHeight / height;
         return ratio;
     }
     //--------------------------------设置参数--------------------------------------
@@ -101,8 +122,8 @@ public class Compress {
         mMaxHeight = maxHeight;
     }
 
-    public void setMaxWeight(int maxWeight) {
-        mMaxWeight = maxWeight;
+    public void setMaxWidth(int maxWidth) {
+        mMaxWidth = maxWidth;
     }
 
     public void setQuality(int quality) {
@@ -130,8 +151,8 @@ public class Compress {
             return this;
         }
 
-        public Builder setMaxWeight(int weight) {
-            mCompress.mMaxWeight = weight;
+        public Builder setMaxWidth(int weight) {
+            mCompress.mMaxWidth = weight;
             return this;
         }
 

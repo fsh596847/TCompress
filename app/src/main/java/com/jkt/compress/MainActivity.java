@@ -47,14 +47,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnCompress(View view) {
-        if (mFile==null) {
+        if (mFile == null) {
             showToast("请先选择照片");
             return;
         }
         //可以构造者方式设置,也可以创建对象设置属性值
         Compress compress = new Compress.Builder()
-                .setMaxWeight(800)
-                .setMaxHeight(800)
+                .setMaxWidth(1300)
+                .setMaxHeight(1600)
                 .setQuality(80)
                 .setFormat(Bitmap.CompressFormat.JPEG)
                 .setConfig(Bitmap.Config.RGB_565)
@@ -63,19 +63,22 @@ public class MainActivity extends AppCompatActivity {
 //        compress.setConfig(Bitmap.Config.RGB_565);
 //        compress.setFormat(Bitmap.CompressFormat.WEBP);
 //        compress.setQuality(80);
-//        compress.setMaxWeight(800);
+//        compress.setMaxWidth(800);
 //        compress.setMaxHeight(800);
 
 
-
-        //可以压缩到bitmap或者文件，参数可以是bitmap或者文件
+        //支持四种压缩转化，文件、Bitmap到压缩后的文件、Bitmap
         File compressedFile = compress.compressedToFile(mFile);
-//        Bitmap bitmap = compress.compressedToBitmap(mFile);
-//        File compressedFile1 = compress.compressedToFile(mBitmap);
-//        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
+        //另外三种
+        Bitmap bitmap = compress.compressedToBitmap(mFile);
+        File compressedFile1 = compress.compressedToFile(mBitmap);
+        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
 
-        mCompressedIV.setImageBitmap(BitmapFactory.decodeFile(compressedFile.getAbsolutePath()));
+        Bitmap bm = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
+        mCompressedIV.setImageBitmap(bm);
         mCompressedTV.setText(String.format("Size : %s", FileUtil.getFileSize(compressedFile.length())));
+        Log.i("compress", bm.getWidth() + "-----" + bm.getHeight());
+        Log.i("compress","bitmapCount"+bm.getByteCount()+"  "+bm.getConfig());
     }
 
 
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             mBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
             mOriginIV.setImageBitmap(mBitmap);
             mOriginTV.setText(String.format("Size : %s", FileUtil.getFileSize(mFile.length())));
-            Log.i("bitmapinfo",mBitmap+"   "+mBitmap.getWidth()+"     "+mBitmap.getHeight());
+            Log.i("bitmapinfo", mBitmap + "   " + mBitmap.getWidth() + "     " + mBitmap.getHeight());
         }
     }
 
