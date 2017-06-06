@@ -74,11 +74,10 @@ public class MainActivity extends AppCompatActivity {
         File compressedFile1 = compress.compressedToFile(mBitmap);
         Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
 
+
         Bitmap bm = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
         mCompressedIV.setImageBitmap(bm);
         mCompressedTV.setText(String.format("Size : %s", FileUtil.getFileSize(compressedFile.length())));
-        Log.i("compress", bm.getWidth() + "-----" + bm.getHeight());
-        Log.i("compress","bitmapCount"+bm.getByteCount()+"  "+bm.getConfig());
     }
 
 

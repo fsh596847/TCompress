@@ -3,12 +3,14 @@ package com.jkt.tcompress;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.support.annotation.NonNull;
+import android.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by Allen at 2017/6/5 17:31
@@ -21,28 +23,28 @@ public class Compress {
     private Bitmap.CompressFormat mFormat = Bitmap.CompressFormat.JPEG;
     private Bitmap.Config mConfig = Bitmap.Config.ARGB_8888;
 
+    //---------------------主线路：文件里面的图片压缩完毕存入文件---------------------------------
     public File compressedToFile(File srcFile) {
-        BitmapFactory.Options options = getOptions(srcFile);
-        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
-        File file = compressedToFile(bitmap);
-        bitmap.recycle();
-        return file;
-    }
-    public File compressedToFile(Bitmap bitmap) {
+        Bitmap bitmap = getBitmap(srcFile);
         Bitmap compressedBitmap = compressedToBitmap(bitmap);
         File file = bitmap2File(compressedBitmap);
+        bitmap.recycle();
         compressedBitmap.recycle();
         return file;
     }
 
-    @NonNull
+    private Bitmap getBitmap(File srcFile) {
+        BitmapFactory.Options options = getOptions(srcFile);
+        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
+        bitmap = rotateBitmap(bitmap, srcFile);
+        return bitmap;
+    }
+
     private BitmapFactory.Options getOptions(File srcFile) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
-        int outWidth = options.outWidth;
-        int outHeight = options.outHeight;
-        options.inSampleSize = setSampleSize(outWidth, outHeight);
+        options.inSampleSize = setSampleSize(options.outWidth, options.outHeight);
         options.inJustDecodeBounds = false;
         return options;
     }
@@ -55,14 +57,42 @@ public class Compress {
         return sampleSize;
     }
 
-    public Bitmap compressedToBitmap(File srcFile) {
-        BitmapFactory.Options options = getOptions(srcFile);
-        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath(),options);
-        Bitmap compressedBitmap = compressedToBitmap(bitmap);
-        bitmap.recycle();
-        return compressedBitmap;
+    private Bitmap rotateBitmap(Bitmap bitmap, File srcFile) {
+        int degree = getPictureDegree(srcFile);
+        if (degree == 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        Bitmap ret = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        matrix.setRotate(degree, ret.getWidth() / 2, ret.getHeight() / 2);
+        Canvas canvas = new Canvas(ret);
+        canvas.drawBitmap(bitmap, matrix, null);
+        return ret;
     }
 
+    private static int getPictureDegree(File file) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(file.getAbsolutePath());
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+
+    //bitmap到压缩后的bitmap
     public Bitmap compressedToBitmap(Bitmap bitmap) {
         Bitmap ret = null;
         float height = bitmap.getHeight();
@@ -74,6 +104,16 @@ public class Compress {
         return ret;
     }
 
+    private float setRatio(float width, float height) {
+        float ratio = 1;
+        if (mMaxWidth < width && mMaxHeight < height) {
+            if (mMaxWidth / width < mMaxHeight / height)
+                ratio = mMaxWidth / width;
+            else ratio = mMaxHeight / height;
+        } else if (mMaxWidth < width) ratio = mMaxWidth / width;
+        else if (mMaxHeight < height) ratio = mMaxHeight / height;
+        return ratio;
+    }
 
     private File bitmap2File(Bitmap bitmap) {
         File ret = null;
@@ -105,16 +145,24 @@ public class Compress {
         return ret;
     }
 
-    private float setRatio(float width, float height) {
-        float ratio = 1;
-        if (mMaxWidth < width && mMaxHeight < height) {
-            if (mMaxWidth / width < mMaxHeight / height)
-                ratio = mMaxWidth / width;
-            else ratio = mMaxHeight / height;
-        } else if (mMaxWidth < width) ratio = mMaxWidth / width;
-        else if (mMaxHeight < height) ratio = mMaxHeight / height;
-        return ratio;
+    //-------扩展（bitmap到压缩后的bitmap，已经包含在，文件到压缩后的文件的步骤之中）----------------------------------
+    //文件图片压缩到新的bitmap
+    public Bitmap compressedToBitmap(File srcFile) {
+        Bitmap bitmap = getBitmap(srcFile);
+        Bitmap compressedBitmap = compressedToBitmap(bitmap);
+        bitmap.recycle();
+        return compressedBitmap;
     }
+
+    //bitmap压缩到新的文件
+    public File compressedToFile(Bitmap bitmap) {
+        Bitmap compressedBitmap = compressedToBitmap(bitmap);
+        File file = bitmap2File(compressedBitmap);
+        compressedBitmap.recycle();
+        return file;
+    }
+
+
     //--------------------------------设置参数--------------------------------------
 
 
