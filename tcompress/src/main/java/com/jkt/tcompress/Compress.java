@@ -138,6 +138,7 @@ public class Compress {
             bitmap.compress(mFormat, mQuality, baos);
             outputStream.write(baos.toByteArray());
             outputStream.flush();
+            baos.close();
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
