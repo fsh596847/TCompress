@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
         }
         //可以构造者方式设置,也可以创建对象设置属性值
         Compress compress = new Compress.Builder()
-                .setMaxWidth(1300)
-                .setMaxHeight(1600)
+                .setMaxWidth(700)
+                .setMaxHeight(900)
                 .setQuality(80)
                 .setFormat(Bitmap.CompressFormat.JPEG)
                 .setConfig(Bitmap.Config.RGB_565)
@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
         //支持四种压缩转化，文件、Bitmap到压缩后的文件、Bitmap
         File compressedFile = compress.compressedToFile(mFile);
         //另外三种
-        Bitmap bitmap = compress.compressedToBitmap(mFile);
-        File compressedFile1 = compress.compressedToFile(mBitmap);
-        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
+//        File compressedFile1 = compress.compressedToFile(mBitmap);
+//        Bitmap bitmap = compress.compressedToBitmap(mFile);
+//        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
 
 
         Bitmap bm = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
