@@ -51,11 +51,32 @@ public class MainActivity extends AppCompatActivity {
             showToast("请先选择照片");
             return;
         }
-        Compress compress = new Compress();
-        Bitmap compressedBitmap = compress.getCompressedBitmap(mBitmap);
-        File compressedFile = compress.bitmap2File(compressedBitmap);
-        mCompressedIV.setImageBitmap(compressedBitmap);
+        //可以构造者方式设置,也可以创建对象设置属性值
+        Compress compress = new Compress.Build()
+                .setMaxWeight(800)
+                .setMaxHeight(800)
+                .setQuality(80)
+                .setFormat(Bitmap.CompressFormat.JPEG)
+                .setConfig(Bitmap.Config.ARGB_8888)
+                .create();
+//        Compress compress = new Compress();
+//        compress.setConfig(Bitmap.Config.RGB_565);
+//        compress.setFormat(Bitmap.CompressFormat.WEBP);
+//        compress.setQuality(80);
+//        compress.setMaxWeight(800);
+//        compress.setMaxHeight(800);
+
+
+
+        //可以压缩到bitmap或者文件，参数可以是bitmap或者文件
+        File compressedFile = compress.compressedToFile(mFile);
+//        Bitmap bitmap = compress.compressedToBitmap(mFile);
+//        File compressedFile1 = compress.compressedToFile(mBitmap);
+//        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
+
+        mCompressedIV.setImageBitmap(BitmapFactory.decodeFile(compressedFile.getAbsolutePath()));
         mCompressedTV.setText(String.format("Size : %s", FileUtil.getFileSize(compressedFile.length())));
+
     }
 
 
