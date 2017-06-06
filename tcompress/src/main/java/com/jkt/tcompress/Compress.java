@@ -16,8 +16,8 @@ import java.io.FileOutputStream;
 public class Compress {
     //默认属性，通过构造者模式或者set方法设置
     private int mQuality = 80;
-    private int mMaxHeight = 1280;
-    private int mMaxWeight = 960;
+    private float mMaxHeight = 1280;
+    private float mMaxWeight = 960;
     private Bitmap.CompressFormat mFormat = Bitmap.CompressFormat.JPEG;
     private Bitmap.Config mConfig = Bitmap.Config.ARGB_8888;
 
@@ -41,13 +41,14 @@ public class Compress {
 
     public Bitmap compressedToBitmap(Bitmap bitmap) {
         Bitmap ret = null;
-        int height = bitmap.getHeight();
-        int width = bitmap.getWidth();
+        float height = bitmap.getHeight();
+        float width = bitmap.getWidth();
         float ratio = setRatio(width, height);
-        Log.i("ratioinfo", ratio + "  " + (int) (width * ratio) + "          " + (int) (height * ratio));
+        Log.i("ratioinfo", ratio + "  " + (int) (width * ratio) + "  " + (int) (height * ratio));
         ret = Bitmap.createBitmap((int) (width * ratio), (int) (height * ratio), mConfig);
         Canvas canvas = new Canvas(ret);
         canvas.drawBitmap(bitmap, null, new RectF(0, 0, ret.getWidth(), ret.getHeight()), null);
+        bitmap.recycle();
         return ret;
     }
 
@@ -59,17 +60,21 @@ public class Compress {
             String suffix = null;
             switch (mFormat) {
                 case JPEG:
-                    suffix = "jpg";
+                    suffix = ".jpg";
+                    break;
                 case PNG:
-                    suffix = "png";
+                    suffix = ".png";
+                    break;
                 case WEBP:
-                    suffix = "webp";
+                    suffix = ".webp";
+                    break;
             }
             ret = File.createTempFile(prefix, suffix);
             ret.deleteOnExit();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             FileOutputStream outputStream = new FileOutputStream(ret);
             bitmap.compress(mFormat, mQuality, baos);
+            bitmap.recycle();
             outputStream.write(baos.toByteArray());
             outputStream.flush();
             outputStream.close();
@@ -79,14 +84,14 @@ public class Compress {
         return ret;
     }
 
-    private float setRatio(int width, int height) {
+    private float setRatio(float width, float height) {
         float ratio = 1;
         if (mMaxWeight < width && mMaxHeight < height) {
-            if (mMaxWeight / (float) width < mMaxHeight / (float) height)
-                ratio = mMaxWeight / (float) width;
-            else ratio = mMaxHeight / (float) height;
-        } else if (mMaxWeight < width) ratio = mMaxWeight / (float) width;
-        else if (mMaxHeight < height) ratio = mMaxHeight / (float) height;
+            if (mMaxWeight /  width < mMaxHeight / height)
+                ratio = mMaxWeight /  width;
+            else ratio = mMaxHeight /  height;
+        } else if (mMaxWeight < width) ratio = mMaxWeight /  width;
+        else if (mMaxHeight < height) ratio = mMaxHeight /  height;
         return ratio;
     }
     //--------------------------------设置参数--------------------------------------
@@ -113,39 +118,39 @@ public class Compress {
     }
 
     //---------------------------------构建者模式---------------------------------------
-    public static class Build {
+    public static class Builder {
         private Compress mCompress;
 
-        public Build() {
+        public Builder() {
             mCompress = new Compress();
         }
 
-        public Build setMaxHeight(int height) {
+        public Builder setMaxHeight(int height) {
             mCompress.mMaxHeight = height;
             return this;
         }
 
-        public Build setMaxWeight(int weight) {
+        public Builder setMaxWeight(int weight) {
             mCompress.mMaxWeight = weight;
             return this;
         }
 
-        public Build setQuality(int quality) {
+        public Builder setQuality(int quality) {
             mCompress.mQuality = quality;
             return this;
         }
 
-        public Build setConfig(Bitmap.Config config) {
+        public Builder setConfig(Bitmap.Config config) {
             mCompress.mConfig = config;
             return this;
         }
 
-        public Build setFormat(Bitmap.CompressFormat format) {
+        public Builder setFormat(Bitmap.CompressFormat format) {
             mCompress.mFormat = format;
             return this;
         }
 
-        public Compress create() {
+        public Compress build() {
             return mCompress;
         }
     }

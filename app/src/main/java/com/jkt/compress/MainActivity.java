@@ -52,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         //可以构造者方式设置,也可以创建对象设置属性值
-        Compress compress = new Compress.Build()
+        Compress compress = new Compress.Builder()
                 .setMaxWeight(800)
                 .setMaxHeight(800)
                 .setQuality(80)
                 .setFormat(Bitmap.CompressFormat.JPEG)
-                .setConfig(Bitmap.Config.ARGB_8888)
-                .create();
+                .setConfig(Bitmap.Config.RGB_565)
+                .build();
 //        Compress compress = new Compress();
 //        compress.setConfig(Bitmap.Config.RGB_565);
 //        compress.setFormat(Bitmap.CompressFormat.WEBP);
@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         mCompressedIV.setImageBitmap(BitmapFactory.decodeFile(compressedFile.getAbsolutePath()));
         mCompressedTV.setText(String.format("Size : %s", FileUtil.getFileSize(compressedFile.length())));
-
     }
 
 
