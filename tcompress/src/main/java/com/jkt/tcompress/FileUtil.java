@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +20,7 @@ public class FileUtil {
         try {
             String fileName = getFileName(context, uri);
             String[] pAs = getPrefixAndSuffix(fileName);
+            Log.i("prefix",pAs[0]+"--------------"+pAs[1]);
             tempFile = File.createTempFile(pAs[0], pAs[1]);
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
             FileOutputStream outputStream = new FileOutputStream(tempFile);

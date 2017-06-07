@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.media.ExifInterface;
+import android.os.Handler;
+import android.os.Message;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -142,6 +144,10 @@ public class Compress {
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
+            if (mListener != null) {
+                mListener.compressFinish(false, e);
+                return null;
+            }
         }
         return ret;
     }
@@ -223,6 +229,107 @@ public class Compress {
         public Compress build() {
             return mCompress;
         }
+    }
+
+    //-------------------------------添加异步处理----------------------------------------------
+
+    //添加属性
+    public onCompressListener mListener;
+    public Handler mHandler;
+
+    //--------------------------------监听---------------------------------------------------
+
+    public interface onCompressListener<T> {
+        void compressFinish(boolean success, T t);
+    }
+
+    //--------------------------------Handler--------------------------------------------------
+
+    private Handler getHandler() {
+        return new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (mListener != null) {
+                    mListener.compressFinish(true, msg.obj);
+                }
+                return true;
+            }
+        });
+    }
+
+    //-------------------------------------异步方法-------------------------------------------
+
+    //文件压缩到文件
+    public void compressToFileAsync(final File file, onCompressListener listener) {
+        mListener = listener;
+        mHandler = getHandler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File target = compressedToFile(file);
+                if (target == null) {
+                    return;
+                }
+                Message message = mHandler.obtainMessage();
+                message.obj = target;
+                message.sendToTarget();
+            }
+        }).start();
+
+    }
+
+    //Bitmap压缩到文件
+    public void compressToFileAsync(final Bitmap bitmap, onCompressListener listener) {
+        mListener = listener;
+        mHandler = getHandler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File target = compressedToFile(bitmap);
+                if (target == null) {
+                    return;
+                }
+                Message message = mHandler.obtainMessage();
+                message.obj = target;
+                message.sendToTarget();
+            }
+        }).start();
+    }
+
+    //文件压缩到Bitmap
+    public void compressToBitmapAsync(final File file, onCompressListener listener) {
+        mListener = listener;
+        mHandler = getHandler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap target = compressedToBitmap(file);
+                if (target == null) {
+                    return;
+                }
+                Message message = mHandler.obtainMessage();
+                message.obj = target;
+                message.sendToTarget();
+            }
+        }).start();
+    }
+
+    //Bitmap压缩到Bitmap
+    public void compressToBitmapAsync(final Bitmap bitmap, onCompressListener listener) {
+        mListener = listener;
+        mHandler = getHandler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap target = compressedToBitmap(bitmap);
+                if (target == null) {
+                    return;
+                }
+                Message message = mHandler.obtainMessage();
+                message.obj = target;
+                message.sendToTarget();
+            }
+        }).start();
     }
 
 }

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //可以构造者方式设置,也可以创建对象设置属性值
         Compress compress = new Compress.Builder()
-                .setMaxWidth(700)
+                .setMaxWidth(800)
                 .setMaxHeight(900)
                 .setQuality(80)
                 .setFormat(Bitmap.CompressFormat.JPEG)
@@ -68,18 +68,94 @@ public class MainActivity extends AppCompatActivity {
 
 
         //支持四种压缩转化，文件、Bitmap到压缩后的文件、Bitmap
+        //同步、异步都支持4种压缩
+        //----------------同步处理----------------------------
+//        sync(compress);
+
+        //----------------异步处理----------------------------
+        async(compress);
+
+    }
+
+    private void async(Compress compress) {
+        //泛型设置回调类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
+        //文件压缩到指定文件
+        compress.compressToFileAsync(mFile, new Compress.onCompressListener<File>() {
+            @Override
+            public void compressFinish(boolean success, File file) {
+                if (success) {
+                    showData(file);
+                }
+                else {
+                    //请查看文件权限问题（其他问题基本不存在，如果有任何机型问题，请反馈谢谢）
+                }
+            }
+        });
+        //----------------其他三种异步压缩类似-------------
+//        otherThreeAsync();
+
+    }
+
+    private void otherThreeAsync() {
+        //如果调用多个压缩方法，注意查看多个监听对象泛型是否一致。不一致，请创建多个
+        //compress对象分别调用压缩方法。避免回调时候类型转化异常（调用方法时候指定回调参数类型）
+
+        //Bitmap压缩到文件
+        Compress compress1 = new Compress();
+        compress1.compressToFileAsync(mBitmap, new Compress.onCompressListener<File>() {
+            @Override
+            public void compressFinish(boolean success, File file) {
+                if (success) {
+                    showData(file);
+                    Log.i("async", "1----------------");
+                }
+            }
+        });
+        //文件压缩到Bitmap
+        Compress compress2 = new Compress();
+        compress2.compressToBitmapAsync(mFile, new Compress.onCompressListener<Bitmap>() {
+            @Override
+            public void compressFinish(boolean success, Bitmap bitmap) {
+                if (success) {
+                    mCompressedIV.setImageBitmap(bitmap);
+                    Log.i("async", "2----------------");
+
+                }
+            }
+        });
+        //Bitmap压缩到Bitmap
+        Compress compress3 = new Compress();
+        compress3.compressToBitmapAsync(mBitmap, new Compress.onCompressListener<Bitmap>() {
+            @Override
+            public void compressFinish(boolean success, Bitmap bitmap) {
+                if (success) {
+                    mCompressedIV.setImageBitmap(bitmap);
+                    Log.i("async", "3----------------");
+                }
+            }
+        });
+    }
+
+    private void sync(Compress compress) {
+        //使用前建议判定压缩后的文件、bitmap是否为Null（在安全性要求高的情况下，需要文件读写权限）
         File compressedFile = compress.compressedToFile(mFile);
+        if (compressedFile == null) {
+            return;
+        }
         //另外三种
 //        File compressedFile1 = compress.compressedToFile(mBitmap);
 //        Bitmap bitmap = compress.compressedToBitmap(mFile);
 //        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
 
+        //数据显示
+        showData(compressedFile);
+    }
 
+    private void showData(File compressedFile) {
         Bitmap bm = BitmapFactory.decodeFile(compressedFile.getAbsolutePath());
         mCompressedIV.setImageBitmap(bm);
         mCompressedTV.setText(String.format("Size : %s", FileUtil.getFileSize(compressedFile.length())));
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
