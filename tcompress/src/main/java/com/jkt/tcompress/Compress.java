@@ -253,14 +253,9 @@ public class Compress {
     //-------------------------------添加异步处理----------------------------------------------
 
     //添加属性
-    public onCompressListener mListener;
+    public OnCompressListener mListener;
     public Handler mHandler;
 
-    //--------------------------------监听---------------------------------------------------
-
-    public interface onCompressListener<T> {
-        void compressFinish(boolean success, T t);
-    }
 
     //--------------------------------Handler--------------------------------------------------
 
@@ -280,9 +275,10 @@ public class Compress {
     //-------------------------------------异步方法-------------------------------------------
 
     //文件压缩到文件
-    public void compressToFileAsync(final File file, onCompressListener listener) {
+    public void compressToFileAsync(final File file,  OnCompressListener listener) {
         mListener = listener;
         mHandler = getHandler();
+        listener.onCompressStart();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -296,9 +292,10 @@ public class Compress {
     }
 
     //Bitmap压缩到文件
-    public void compressToFileAsync(final Bitmap bitmap, onCompressListener listener) {
+    public void compressToFileAsync(final Bitmap bitmap,  OnCompressListener listener) {
         mListener = listener;
         mHandler = getHandler();
+        listener.onCompressStart();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -311,9 +308,10 @@ public class Compress {
     }
 
     //文件压缩到Bitmap
-    public void compressToBitmapAsync(final File file, onCompressListener listener) {
+    public void compressToBitmapAsync(final File file, OnCompressListener listener) {
         mListener = listener;
         mHandler = getHandler();
+        listener.onCompressStart();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -326,9 +324,10 @@ public class Compress {
     }
 
     //Bitmap压缩到Bitmap
-    public void compressToBitmapAsync(final Bitmap bitmap, onCompressListener listener) {
+    public void compressToBitmapAsync(final Bitmap bitmap, OnCompressListener listener) {
         mListener = listener;
         mHandler = getHandler();
+        listener.onCompressStart();
         new Thread(new Runnable() {
             @Override
             public void run() {

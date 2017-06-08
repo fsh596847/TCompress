@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.jkt.tcompress.Compress;
 import com.jkt.tcompress.FileUtil;
+import com.jkt.tcompress.OnCompressListener;
 
 import java.io.File;
 
@@ -80,7 +81,13 @@ public class MainActivity extends AppCompatActivity {
     private void async(Compress compress) {
         //泛型设置回调类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
         //文件压缩到指定文件
-        compress.compressToFileAsync(mFile, new Compress.onCompressListener<File>() {
+        compress.compressToFileAsync(mFile, new OnCompressListener<File>() {
+            //onCompressStart是非抽象方法，可选监听 可以开启提示框等
+            @Override
+            public void onCompressStart() {
+                showToast("开始压缩");
+            }
+
             @Override
             public void compressFinish(boolean success, File file) {
                 if (success) {
@@ -102,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Bitmap压缩到文件
         Compress compress1 = new Compress();
-        compress1.compressToFileAsync(mBitmap, new Compress.onCompressListener<File>() {
+        compress1.compressToFileAsync(mBitmap, new OnCompressListener<File>() {
             @Override
             public void compressFinish(boolean success, File file) {
                 if (success) {
@@ -113,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         });
         //文件压缩到Bitmap
         Compress compress2 = new Compress();
-        compress2.compressToBitmapAsync(mFile, new Compress.onCompressListener<Bitmap>() {
+        compress2.compressToBitmapAsync(mFile, new OnCompressListener<Bitmap>() {
             @Override
             public void compressFinish(boolean success, Bitmap bitmap) {
                 if (success) {
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         });
         //Bitmap压缩到Bitmap
         Compress compress3 = new Compress();
-        compress3.compressToBitmapAsync(mBitmap, new Compress.onCompressListener<Bitmap>() {
+        compress3.compressToBitmapAsync(mBitmap, new OnCompressListener<Bitmap>() {
             @Override
             public void compressFinish(boolean success, Bitmap bitmap) {
                 if (success) {
