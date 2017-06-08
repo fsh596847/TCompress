@@ -27,27 +27,40 @@
         //支持四种压缩转化，文件、Bitmap到压缩后的文件、Bitmap
         File compressedFile = compress.compressedToFile(mFile);
         
+        if (compressedFile == null) {
+            //请查看文件权限问题（其他问题基本不存在，可以查看日志详情）
+            return;
+        }
+        showData(compressedFile);
+
         //另外三种
         File compressedFile1 = compress.compressedToFile(mBitmap);
         Bitmap compressedBitmap = compress.compressedToBitmap(mFile);
         Bitmap compressedBitmap1 = compress.compressedToBitmap(mBitmap);
-        
-        //压缩对象使用前最好加null判定，提高系统稳健性（权限等问题，如果有任何机型问题，请反馈谢谢）
 
-       
-</pre> 
+      
+
+
+</pre>
 ###  异步压缩图片:
 <pre>
         //泛型设置回调方法第二个参数类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
         //文件压缩到指定文件
         compress.compressToFileAsync(mFile, new Compress.onCompressListener&lt;File>() {
-            @Override
+            //onCompressStart是非抽象方法，可选监听 可以开启提示框等 默认不重写
+            @Override
+            public void onCompressStart() {
+            //   showToast("开始压缩");
+            }
+
+            //compressFinish是抽象方法，必选监听 默认重写
+            @Override
             public void compressFinish(boolean success, File file) {
                 if (success) {
                     showData(file);
                 }
                 else {
-                    //请查看文件权限问题（其他问题基本不存在，如果有任何机型问题，请反馈谢谢）
+                    //请查看文件权限问题（其他问题基本不存在，可以查看日志详情）
                 }
             }
         });
@@ -56,7 +69,7 @@
 </pre>
 ###   具体细节用法,下载查看Demo
 ###   模板依赖:&nbsp;&nbsp;项目里面的TCompress模板
-###   gradle依赖:&nbsp;&nbsp;&nbsp;compile&nbsp;'com.jkt:tcompress:1.1.0'
+###   gradle依赖:&nbsp;&nbsp;&nbsp;compile&nbsp;'com.jkt:tcompress:1.2.0'
 
 
 

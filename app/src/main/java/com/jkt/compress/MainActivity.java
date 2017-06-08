@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
         //泛型设置回调类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
         //文件压缩到指定文件
         compress.compressToFileAsync(mFile, new OnCompressListener<File>() {
-            //onCompressStart是非抽象方法，可选监听 可以开启提示框等
+            //onCompressStart是非抽象方法，可选监听 可以开启提示框等 默认不重写
             @Override
             public void onCompressStart() {
-                showToast("开始压缩");
+//                showToast("开始压缩");
             }
 
             @Override
@@ -93,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 if (success) {
                     showData(file);
                 } else {
-                    //请查看文件权限问题（其他问题基本不存在，如果有任何机型问题，请反馈谢谢）
-                    showToast("压缩失败了，请查看日志");
+                    //请查看文件权限问题（其他问题基本不存在，可以查看日志详情）
                 }
             }
         });
@@ -146,8 +145,7 @@ public class MainActivity extends AppCompatActivity {
     private void sync(Compress compress) {
         File compressedFile = compress.compressedToFile(mFile);
         if (compressedFile == null) {
-            //请查看文件权限问题（其他问题基本不存在，如果有任何机型问题，请反馈谢谢）
-            showToast("压缩失败了，请查看日志");
+            //请查看文件权限问题（其他问题基本不存在，可以查看日志详情）
             return;
         }
         //另外三种
