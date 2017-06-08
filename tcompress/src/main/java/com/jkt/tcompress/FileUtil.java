@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
  * Created by Allen at 2017/6/5 16:30
  */
 public class FileUtil {
-    public static File createFile(Context context, Uri uri) {
+    public static File createTempFile(Context context, Uri uri) {
         File tempFile = null;
         try {
             String fileName = getFileName(context, uri);

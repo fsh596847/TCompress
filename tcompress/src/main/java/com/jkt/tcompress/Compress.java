@@ -26,26 +26,32 @@ public class Compress {
     private Bitmap.Config mConfig = Bitmap.Config.ARGB_8888;
 
     //---------------------主线路：文件里面的图片压缩完毕存入文件---------------------------------
-    public File compressedToFile(File srcFile) {
-        Bitmap bitmap = getBitmap(srcFile);
-        Bitmap compressedBitmap = compressedToBitmap(bitmap);
-        File file = bitmap2File(compressedBitmap);
-        bitmap.recycle();
-        compressedBitmap.recycle();
-        return file;
+    public File compressedToFile(File file) {
+        File ret = null;
+        try {
+            Bitmap bitmap = getBitmap(file);
+            Bitmap compressedBitmap = compressedToBitmap(bitmap);
+            ret = bitmap2File(compressedBitmap);
+            bitmap.recycle();
+            compressedBitmap.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return ret;
     }
 
-    private Bitmap getBitmap(File srcFile) {
-        BitmapFactory.Options options = getOptions(srcFile);
-        Bitmap bitmap = BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
-        bitmap = rotateBitmap(bitmap, srcFile);
+    private Bitmap getBitmap(File file) {
+        BitmapFactory.Options options = getOptions(file);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+        bitmap = rotateBitmap(bitmap, file);
         return bitmap;
     }
 
-    private BitmapFactory.Options getOptions(File srcFile) {
+    private BitmapFactory.Options getOptions(File file) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(srcFile.getAbsolutePath(), options);
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
         options.inSampleSize = setSampleSize(options.outWidth, options.outHeight);
         options.inJustDecodeBounds = false;
         return options;
@@ -59,8 +65,8 @@ public class Compress {
         return sampleSize;
     }
 
-    private Bitmap rotateBitmap(Bitmap bitmap, File srcFile) {
-        int degree = getPictureDegree(srcFile);
+    private Bitmap rotateBitmap(Bitmap bitmap, File file) {
+        int degree = getPictureDegree(file);
         if (degree == 0) {
             return bitmap;
         }
@@ -97,12 +103,17 @@ public class Compress {
     //bitmap到压缩后的bitmap
     public Bitmap compressedToBitmap(Bitmap bitmap) {
         Bitmap ret = null;
-        float height = bitmap.getHeight();
-        float width = bitmap.getWidth();
-        float ratio = setRatio(width, height);
-        ret = Bitmap.createBitmap((int) (width * ratio), (int) (height * ratio), mConfig);
-        Canvas canvas = new Canvas(ret);
-        canvas.drawBitmap(bitmap, null, new RectF(0, 0, ret.getWidth(), ret.getHeight()), null);
+        try {
+            float height = bitmap.getHeight();
+            float width = bitmap.getWidth();
+            float ratio = setRatio(width, height);
+            ret = Bitmap.createBitmap((int) (width * ratio), (int) (height * ratio), mConfig);
+            Canvas canvas = new Canvas(ret);
+            canvas.drawBitmap(bitmap, null, new RectF(0, 0, ret.getWidth(), ret.getHeight()), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
         return ret;
     }
 
@@ -144,29 +155,37 @@ public class Compress {
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
-            if (mListener != null) {
-                mListener.compressFinish(false, e);
-                return null;
-            }
         }
         return ret;
     }
 
     //-------扩展（bitmap到压缩后的bitmap，已经包含在，文件到压缩后的文件的步骤之中）----------------------------------
     //文件图片压缩到新的bitmap
-    public Bitmap compressedToBitmap(File srcFile) {
-        Bitmap bitmap = getBitmap(srcFile);
-        Bitmap compressedBitmap = compressedToBitmap(bitmap);
-        bitmap.recycle();
-        return compressedBitmap;
+    public Bitmap compressedToBitmap(File file) {
+        Bitmap ret = null;
+        try {
+            Bitmap bitmap = getBitmap(file);
+            ret = compressedToBitmap(bitmap);
+            bitmap.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return ret;
     }
 
     //bitmap压缩到新的文件
     public File compressedToFile(Bitmap bitmap) {
-        Bitmap compressedBitmap = compressedToBitmap(bitmap);
-        File file = bitmap2File(compressedBitmap);
-        compressedBitmap.recycle();
-        return file;
+        File ret = null;
+        try {
+            Bitmap compressedBitmap = compressedToBitmap(bitmap);
+            ret = bitmap2File(compressedBitmap);
+            compressedBitmap.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return ret;
     }
 
 
@@ -250,7 +269,8 @@ public class Compress {
             @Override
             public boolean handleMessage(Message msg) {
                 if (mListener != null) {
-                    mListener.compressFinish(true, msg.obj);
+                    if (msg.obj == null) mListener.compressFinish(false, null);
+                    else mListener.compressFinish(true, msg.obj);
                 }
                 return true;
             }
@@ -267,9 +287,6 @@ public class Compress {
             @Override
             public void run() {
                 File target = compressedToFile(file);
-                if (target == null) {
-                    return;
-                }
                 Message message = mHandler.obtainMessage();
                 message.obj = target;
                 message.sendToTarget();
@@ -286,9 +303,6 @@ public class Compress {
             @Override
             public void run() {
                 File target = compressedToFile(bitmap);
-                if (target == null) {
-                    return;
-                }
                 Message message = mHandler.obtainMessage();
                 message.obj = target;
                 message.sendToTarget();
@@ -304,9 +318,6 @@ public class Compress {
             @Override
             public void run() {
                 Bitmap target = compressedToBitmap(file);
-                if (target == null) {
-                    return;
-                }
                 Message message = mHandler.obtainMessage();
                 message.obj = target;
                 message.sendToTarget();
@@ -322,9 +333,6 @@ public class Compress {
             @Override
             public void run() {
                 Bitmap target = compressedToBitmap(bitmap);
-                if (target == null) {
-                    return;
-                }
                 Message message = mHandler.obtainMessage();
                 message.obj = target;
                 message.sendToTarget();

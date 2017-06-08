@@ -85,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
             public void compressFinish(boolean success, File file) {
                 if (success) {
                     showData(file);
-                }
-                else {
+                } else {
                     //请查看文件权限问题（其他问题基本不存在，如果有任何机型问题，请反馈谢谢）
+                    showToast("压缩失败了，请查看日志");
                 }
             }
         });
@@ -137,9 +137,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sync(Compress compress) {
-        //使用前建议判定压缩后的文件、bitmap是否为Null（在安全性要求高的情况下，需要文件读写权限）
         File compressedFile = compress.compressedToFile(mFile);
         if (compressedFile == null) {
+            //请查看文件权限问题（其他问题基本不存在，如果有任何机型问题，请反馈谢谢）
+            showToast("压缩失败了，请查看日志");
             return;
         }
         //另外三种
@@ -165,11 +166,13 @@ public class MainActivity extends AppCompatActivity {
                 showToast("Failed to open picture!");
                 return;
             }
-            mFile = FileUtil.createFile(this, data.getData());
+            mFile = FileUtil.createTempFile(this, data.getData());
+            if (mFile == null) {
+                return;
+            }
             mBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
             mOriginIV.setImageBitmap(mBitmap);
             mOriginTV.setText(String.format("Size : %s", FileUtil.getFileSize(mFile.length())));
-            Log.i("bitmapinfo", mBitmap + "   " + mBitmap.getWidth() + "     " + mBitmap.getHeight());
         }
     }
 
