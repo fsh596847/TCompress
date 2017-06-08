@@ -34,7 +34,7 @@ publish {
     userOrg = 'jkt'
     groupId = 'com.jkt'
     artifactId = 'tcompress'
-    publishVersion = '1.1.0'
+    publishVersion = '1.2.0'
     desc = 'Oh hi, this is a nice compress util for an android project, right?'
     website = 'https://github.com/HoldMyOwn'
 }
