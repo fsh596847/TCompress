@@ -69,7 +69,7 @@
 </pre>
 ###   具体细节用法,下载查看Demo
 ###   模板依赖:&nbsp;&nbsp;项目里面的TCompress模板
-###   gradle依赖:&nbsp;&nbsp;&nbsp;compile&nbsp;'com.jkt:tcompress:1.2.0'
+###   gradle依赖:&nbsp;&nbsp;&nbsp;compile&nbsp;'com.jkt:tcompress:1.2.1'
 
 
 
