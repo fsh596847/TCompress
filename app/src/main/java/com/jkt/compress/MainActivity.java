@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void compressFinish(boolean success, File file) {
+            public void onCompressFinish(boolean success, File file) {
                 if (success) {
                     showData(file);
                 } else {
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         Compress compress1 = new Compress();
         compress1.compressToFileAsync(mBitmap, new OnCompressListener<File>() {
             @Override
-            public void compressFinish(boolean success, File file) {
+            public void onCompressFinish(boolean success, File file) {
                 if (success) {
                     showData(file);
                     Log.i("async", "1----------------");
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         Compress compress2 = new Compress();
         compress2.compressToBitmapAsync(mFile, new OnCompressListener<Bitmap>() {
             @Override
-            public void compressFinish(boolean success, Bitmap bitmap) {
+            public void onCompressFinish(boolean success, Bitmap bitmap) {
                 if (success) {
                     mCompressedIV.setImageBitmap(bitmap);
                     Log.i("async", "2----------------");
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         Compress compress3 = new Compress();
         compress3.compressToBitmapAsync(mBitmap, new OnCompressListener<Bitmap>() {
             @Override
-            public void compressFinish(boolean success, Bitmap bitmap) {
+            public void onCompressFinish(boolean success, Bitmap bitmap) {
                 if (success) {
                     mCompressedIV.setImageBitmap(bitmap);
                     Log.i("async", "3----------------");

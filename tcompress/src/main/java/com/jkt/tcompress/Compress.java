@@ -264,8 +264,8 @@ public class Compress {
             @Override
             public boolean handleMessage(Message msg) {
                 if (mListener != null) {
-                    if (msg.obj == null) mListener.compressFinish(false, null);
-                    else mListener.compressFinish(true, msg.obj);
+                    if (msg.obj == null) mListener.onCompressFinish(false, null);
+                    else mListener.onCompressFinish(true, msg.obj);
                 }
                 return true;
             }

@@ -47,15 +47,15 @@
         //泛型设置回调方法第二个参数类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
         //文件压缩到指定文件
         compress.compressToFileAsync(mFile, new Compress.onCompressListener&lt;File>() {
-            //onCompressStart是非抽象方法，可选监听 可以开启提示框等 默认不重写
+            //非抽象方法，可选监听 默认不重写
             @Override
             public void onCompressStart() {
             //   showToast("开始压缩");
             }
 
-            //compressFinish是抽象方法，必选监听 默认重写
+            //抽象方法，必选监听   默认重写
             @Override
-            public void compressFinish(boolean success, File file) {
+            public void onCompressFinish(boolean success, File file) {
                 if (success) {
                     showData(file);
                 }
