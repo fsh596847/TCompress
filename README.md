@@ -8,24 +8,24 @@
 ###  创建对象:
 <pre>
         //可以构造者方式设置,也可以创建对象设置属性值(不设定采用默认配置)
-        Compress compress = new Compress.Builder()
+        TCompress tCompress = new TCompress.Builder()
                 .setMaxWidth(700)
                 .setMaxHeight(900)
                 .setQuality(80)
                 .setFormat(Bitmap.CompressFormat.JPEG)
                 .setConfig(Bitmap.Config.RGB_565)
                 .build();
-        //  Compress compress = new Compress();
-        //  compress.setConfig(Bitmap.Config.RGB_565);
-        //  compress.setFormat(Bitmap.CompressFormat.WEBP);
-        //  compress.setQuality(80);
-        //  compress.setMaxWidth(800);
-        //  compress.setMaxHeight(800);
+        //  TCompress tCompress = new TCompress();
+        //  tCompress.setConfig(Bitmap.Config.RGB_565);
+        //  tCompress.setFormat(Bitmap.CompressFormat.WEBP);
+        //  tCompress.setQuality(80);
+        //  tCompress.setMaxWidth(800);
+        //  tCompress.setMaxHeight(800);
 </pre>
 ###  同步压缩图片:
 <pre>
         //支持四种压缩转化，文件、Bitmap到压缩后的文件、Bitmap
-        File compressedFile = compress.compressedToFile(mFile);
+        File compressedFile = tCompress.compressedToFile(mFile);
         
         if (compressedFile == null) {
             //请查看文件权限问题（其他问题基本不存在，可以查看日志详情）
@@ -34,9 +34,9 @@
         showData(compressedFile);
 
         //另外三种
-        File compressedFile1 = compress.compressedToFile(mBitmap);
-        Bitmap compressedBitmap = compress.compressedToBitmap(mFile);
-        Bitmap compressedBitmap1 = compress.compressedToBitmap(mBitmap);
+        File compressedFile1 = tCompress.compressedToFile(mBitmap);
+        Bitmap compressedBitmap = tCompress.compressedToBitmap(mFile);
+        Bitmap compressedBitmap1 = tCompress.compressedToBitmap(mBitmap);
 
       
 
@@ -46,7 +46,7 @@
 <pre>
         //泛型设置回调方法第二个参数类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
         //文件压缩到指定文件
-        compress.compressToFileAsync(mFile, new Compress.onCompressListener&lt;File>() {
+        tCompress.compressToFileAsync(mFile, new OnCompressListener&lt;File>() {
             //非抽象方法，可选监听 默认不重写
             @Override
             public void onCompressStart() {
@@ -68,8 +68,8 @@
         //  otherThreeAsync();
 </pre>
 ###   具体细节用法,下载查看Demo
-###   模板依赖:&nbsp;&nbsp;项目里面的TCompress模板
-###   gradle依赖:&nbsp;&nbsp;&nbsp;compile&nbsp;'com.jkt:tcompress:1.2.1'
+###   模板依赖:&nbsp;&nbsp;项目里面的tcompress模板
+###   gradle依赖:&nbsp;&nbsp;&nbsp;compile&nbsp;'com.jkt:tcompress:1.2.2'
 
 
 

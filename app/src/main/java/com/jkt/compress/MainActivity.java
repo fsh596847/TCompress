@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jkt.tcompress.Compress;
+import com.jkt.tcompress.TCompress;
 import com.jkt.tcompress.FileUtil;
 import com.jkt.tcompress.OnCompressListener;
 
@@ -53,35 +53,35 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         //可以构造者方式设置,也可以创建对象设置属性值
-        Compress compress = new Compress.Builder()
+        TCompress tCompress = new TCompress.Builder()
                 .setMaxWidth(800)
                 .setMaxHeight(900)
                 .setQuality(80)
                 .setFormat(Bitmap.CompressFormat.JPEG)
                 .setConfig(Bitmap.Config.RGB_565)
                 .build();
-//        Compress compress = new Compress();
-//        compress.setConfig(Bitmap.Config.RGB_565);
-//        compress.setFormat(Bitmap.CompressFormat.WEBP);
-//        compress.setQuality(80);
-//        compress.setMaxWidth(800);
-//        compress.setMaxHeight(800);
+//        TCompress tCompress = new TCompress();
+//        tCompress.setConfig(Bitmap.Config.RGB_565);
+//        tCompress.setFormat(Bitmap.CompressFormat.WEBP);
+//        tCompress.setQuality(80);
+//        tCompress.setMaxWidth(800);
+//        tCompress.setMaxHeight(800);
 
 
         //支持四种压缩转化，文件、Bitmap到压缩后的文件、Bitmap
         //同步、异步都支持4种压缩
         //----------------同步处理----------------------------
-//        sync(compress);
+//        sync(tCompress);
 
         //----------------异步处理----------------------------
-        async(compress);
+        async(tCompress);
 
     }
 
-    private void async(Compress compress) {
+    private void async(TCompress tCompress) {
         //泛型设置回调类型。如果不指定泛型，也可以根据方法名的ToFile、ToBitmap进行强转
         //文件压缩到指定文件
-        compress.compressToFileAsync(mFile, new OnCompressListener<File>() {
+        tCompress.compressToFileAsync(mFile, new OnCompressListener<File>() {
             //onCompressStart是非抽象方法，可选监听 可以开启提示框等 默认不重写
             @Override
             public void onCompressStart() {
@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
         //compress对象分别调用压缩方法。避免回调时候类型转化异常（调用方法时候指定回调参数类型）
 
         //Bitmap压缩到文件
-        Compress compress1 = new Compress();
-        compress1.compressToFileAsync(mBitmap, new OnCompressListener<File>() {
+        TCompress tCompress1 = new TCompress();
+        tCompress1.compressToFileAsync(mBitmap, new OnCompressListener<File>() {
             @Override
             public void onCompressFinish(boolean success, File file) {
                 if (success) {
@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //文件压缩到Bitmap
-        Compress compress2 = new Compress();
-        compress2.compressToBitmapAsync(mFile, new OnCompressListener<Bitmap>() {
+        TCompress tCompress2 = new TCompress();
+        tCompress2.compressToBitmapAsync(mFile, new OnCompressListener<Bitmap>() {
             @Override
             public void onCompressFinish(boolean success, Bitmap bitmap) {
                 if (success) {
@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //Bitmap压缩到Bitmap
-        Compress compress3 = new Compress();
-        compress3.compressToBitmapAsync(mBitmap, new OnCompressListener<Bitmap>() {
+        TCompress tCompress3 = new TCompress();
+        tCompress3.compressToBitmapAsync(mBitmap, new OnCompressListener<Bitmap>() {
             @Override
             public void onCompressFinish(boolean success, Bitmap bitmap) {
                 if (success) {
@@ -142,16 +142,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sync(Compress compress) {
-        File compressedFile = compress.compressedToFile(mFile);
+    private void sync(TCompress tCompress) {
+        File compressedFile = tCompress.compressedToFile(mFile);
         if (compressedFile == null) {
             //请查看文件权限问题（其他问题基本不存在，可以查看日志详情）
             return;
         }
         //另外三种
-//        File compressedFile1 = compress.compressedToFile(mBitmap);
-//        Bitmap bitmap = compress.compressedToBitmap(mFile);
-//        Bitmap bitmap1 = compress.compressedToBitmap(mBitmap);
+//        File compressedFile1 = tCompress.compressedToFile(mBitmap);
+//        Bitmap bitmap = tCompress.compressedToBitmap(mFile);
+//        Bitmap bitmap1 = tCompress.compressedToBitmap(mBitmap);
 
         //数据显示
         showData(compressedFile);

@@ -17,7 +17,7 @@ import java.io.IOException;
 /**
  * Created by Allen at 2017/6/5 17:31
  */
-public class Compress {
+public class TCompress {
     //默认属性，通过构造者模式或者set方法设置
     private int mQuality = 80;
     private float mMaxHeight = 1280;
@@ -214,39 +214,39 @@ public class Compress {
 
     //---------------------------------构建者模式---------------------------------------
     public static class Builder {
-        private Compress mCompress;
+        private TCompress mTCompress;
 
         public Builder() {
-            mCompress = new Compress();
+            mTCompress = new TCompress();
         }
 
         public Builder setMaxHeight(int height) {
-            mCompress.mMaxHeight = height;
+            mTCompress.mMaxHeight = height;
             return this;
         }
 
         public Builder setMaxWidth(int weight) {
-            mCompress.mMaxWidth = weight;
+            mTCompress.mMaxWidth = weight;
             return this;
         }
 
         public Builder setQuality(int quality) {
-            mCompress.mQuality = quality;
+            mTCompress.mQuality = quality;
             return this;
         }
 
         public Builder setConfig(Bitmap.Config config) {
-            mCompress.mConfig = config;
+            mTCompress.mConfig = config;
             return this;
         }
 
         public Builder setFormat(Bitmap.CompressFormat format) {
-            mCompress.mFormat = format;
+            mTCompress.mFormat = format;
             return this;
         }
 
-        public Compress build() {
-            return mCompress;
+        public TCompress build() {
+            return mTCompress;
         }
     }
 
