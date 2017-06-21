@@ -6,7 +6,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 9
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -34,7 +34,7 @@ publish {
     userOrg = 'jkt'
     groupId = 'com.jkt'
     artifactId = 'tcompress'
-    publishVersion = '1.2.2'
+    publishVersion = '1.2.3'
     desc = 'Oh hi, this is a nice compress util for an android project, right?'
     website = 'https://github.com/HoldMyOwn'
 }
