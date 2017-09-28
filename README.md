@@ -4,7 +4,7 @@
   优化：三星等部分手机的图片角度处理</br>
   扩展：压缩后图片最大宽高设定（压缩后尺寸接近设定最大值）、质量、格式、配置设定</br>
 ###  预览图:<br>
-  <img width="350"  src="https://github.com/HoldMyOwn/TCompress/blob/master/preview/a.jpg"/><br>
+  <img width="350"  src="https://github.com/HoldMyOwn/TCompress/blob/master/preview/compress-6.gif"/><br>
 ###  创建对象:
 <pre>
         //可以构造者方式设置,也可以创建对象设置属性值(不设定采用默认配置)
